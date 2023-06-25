@@ -12,11 +12,12 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.amber[100],
       body: Column(
         
         children: [
           Container(
-            margin: const EdgeInsets.all(10),
+            margin: const EdgeInsets.only(left: 10,right: 10,bottom: 10),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(16),
               child: Image.asset(
@@ -26,7 +27,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             ),
           ),
           const SizedBox(
-            height: 10,
+            height: 20,
           ),
           Text(
             "News from around the\n world for you",
@@ -39,7 +40,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
           ),
           const Divider(),
           const SizedBox(
-            height: 15,
+            height: 22,
           ),
           Text(
             "Best time to read,take your time to read\na little more of this world",
@@ -59,15 +60,15 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               height: 45,
               child: ElevatedButton(
                   onPressed: () {
-                    Navigator.pushReplacementNamed(context, 'news');
+                    Navigator.pushReplacementNamed(context, 'category');
                   },
                   style: ElevatedButton.styleFrom(
                       elevation: 0, backgroundColor: Colors.orange),
                   child: const Text(
-                    "Get Started    >",
+                    "Get Started ->",
                     style: TextStyle(
                         color: Colors.white,
-                        fontSize: 15,
+                        fontSize: 16,
                         fontStyle: FontStyle.normal,
                         letterSpacing: 1.5),
                   )),

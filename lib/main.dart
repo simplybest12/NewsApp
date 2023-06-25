@@ -1,5 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:newsapp/screens/News_Screen.dart';
+import 'package:newsapp/screens/category_screen.dart';
+import 'package:newsapp/widgets/newstile.dart';
 
 import 'screens/Welcome_Screen.dart';
 
@@ -21,10 +24,12 @@ class MyApp extends StatelessWidget {
       initialRoute: 'welcome',
       routes: {
         'welcome' :(context) => const WelcomeScreen(),
-        'news' : (context) => const NewsScreen()
+        'category':(context) => CategoryScreen(),
+       
+
       },
       debugShowCheckedModeBanner: false,
-      home: WelcomeScreen(),
+   
     );
   }
 }
