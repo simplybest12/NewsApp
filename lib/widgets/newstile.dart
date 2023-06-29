@@ -1,14 +1,11 @@
-import 'dart:io';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:newsapp/screens/web_view.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:provider/provider.dart';
-
-import '../sqldatabase/database.dart';
 
 class NewsTile extends StatefulWidget {
   final author;
@@ -37,10 +34,16 @@ class NewsTile extends StatefulWidget {
   State<NewsTile> createState() => _NewsTileState();
 }
 
+Future addBookmark(String title, String description) async {
+  await FirebaseFirestore.instance.collection('bookmark').add({
+    'title': title,
+    "description": description,
+  });
+}
+
 class _NewsTileState extends State<NewsTile> {
-  @override
   List<dynamic> myPressedList = [];
-  bool isPressed = true;
+  bool isPressed = false;
 
   Widget build(BuildContext context) {
     String pub = DateFormat('dd MMMM yyyy').format(widget.published);
@@ -66,7 +69,7 @@ class _NewsTileState extends State<NewsTile> {
                 )),
                 IconButton(
                     onPressed: () {
-                      isPressed ? null : null;
+                      addBookmark(widget.title, widget.description);
                     },
                     icon: isPressed
                         ? const Icon(

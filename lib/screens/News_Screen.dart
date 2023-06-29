@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:newsapp/api_services/services.dart';
 import 'package:newsapp/screens/bookmarkscreen.dart';
-import 'package:newsapp/sqldatabase/database.dart';
 import 'package:newsapp/widgets/newstile.dart';
 
 import '../model/api_model.dart';
@@ -27,28 +26,12 @@ class _NewsScreenState extends State<NewsScreen> {
   }
 
   APIServices news = APIServices();
-  List<Map<String, dynamic>> sqllist = [];
   
   Future<List<dynamic>> fetchdata() async {
     await news.getNewsData(widget.cat);
     return news.news;
   }
 
-    Future addItems(String titl,String desc) async {
-    await SQLhelper.createItem(titl, desc);
-    print(sqllist);
-    refreshsqlist();
-  }
-    Future<void> refreshsqlist() async {
-    final data = await SQLhelper.getItems();
-    setState(() {
-      sqllist = data;
-    });
-  }
-    Future deleteItems(int id) async {
-    await SQLhelper.deleteItem(id);
-    refreshsqlist();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -142,7 +125,7 @@ class _NewsScreenState extends State<NewsScreen> {
                         url: article.url ?? "",
                         content: article.content ?? "",
                         published: article.publishedAt,
-                        FunctionAdd:addItems(article.title??"", article.description??"") ,
+                 
                       
                         
                       );
