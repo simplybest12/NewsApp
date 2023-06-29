@@ -20,9 +20,10 @@ class _NewsScreenState extends State<NewsScreen> {
 
   @override
   void initState() {
-    newsData = fetchdata();
+  
     // TODO: implement initState
     super.initState();
+      newsData = fetchdata();
   }
 
   APIServices news = APIServices();

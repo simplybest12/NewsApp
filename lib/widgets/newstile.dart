@@ -1,10 +1,14 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:newsapp/screens/web_view.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 class NewsTile extends StatefulWidget {
@@ -34,15 +38,30 @@ class NewsTile extends StatefulWidget {
   State<NewsTile> createState() => _NewsTileState();
 }
 
-Future addBookmark(String title, String description) async {
-  await FirebaseFirestore.instance.collection('bookmark').add({
+int counter = 1;
+String uid = 'a';
+
+CollectionReference userCollection =
+    FirebaseFirestore.instance.collection('bookmark');
+Future addBookmark(String title, String author, String urlToImage, String pub,
+    String url) async {
+  String documentId = userCollection.doc().id;
+  // await FirebaseFirestore.instance
+  //     .collection('bookmark')
+  //     .add({'title': title, "description": description, 'id': documentId});
+  Map<String, dynamic> data = {
     'title': title,
-    "description": description,
-  });
+    'author': author,
+    'uid': documentId,
+    'urlToimage': urlToImage,
+    'postedtime': pub,
+    'url': url,
+  };
+  userCollection.doc(documentId).set(data);
 }
 
 class _NewsTileState extends State<NewsTile> {
-  List<dynamic> myPressedList = [];
+  List<dynamic> chckList = [];
   bool isPressed = false;
 
   Widget build(BuildContext context) {
@@ -69,7 +88,10 @@ class _NewsTileState extends State<NewsTile> {
                 )),
                 IconButton(
                     onPressed: () {
-                      addBookmark(widget.title, widget.description);
+                      addBookmark(widget.title, widget.author,
+                          widget.urlToImage, pub, widget.url);
+                      chckList.add(uid);
+                      print(uid);
                     },
                     icon: isPressed
                         ? const Icon(
@@ -86,9 +108,8 @@ class _NewsTileState extends State<NewsTile> {
                     onPressed: () {
                       print("Before share");
                       Share.share(
-                        widget.title,
+                        widget.description + "\n" + widget.url,
                       );
-                      Share.share(widget.content);
 
                       print("after");
                     },
