@@ -1,5 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:newsapp/api_services/services.dart';
+import 'package:newsapp/screens/bookmarkscreen.dart';
+import 'package:newsapp/sqldatabase/database.dart';
 import 'package:newsapp/widgets/newstile.dart';
 
 import '../model/api_model.dart';
@@ -15,6 +18,7 @@ class NewsScreen extends StatefulWidget {
 class _NewsScreenState extends State<NewsScreen> {
   late Future<List<dynamic>> newsData;
 
+
   @override
   void initState() {
     newsData = fetchdata();
@@ -23,25 +27,89 @@ class _NewsScreenState extends State<NewsScreen> {
   }
 
   APIServices news = APIServices();
-
+  List<Map<String, dynamic>> sqllist = [];
+  
   Future<List<dynamic>> fetchdata() async {
     await news.getNewsData(widget.cat);
     return news.news;
   }
 
+    Future addItems(String titl,String desc) async {
+    await SQLhelper.createItem(titl, desc);
+    print(sqllist);
+    refreshsqlist();
+  }
+    Future<void> refreshsqlist() async {
+    final data = await SQLhelper.getItems();
+    setState(() {
+      sqllist = data;
+    });
+  }
+    Future deleteItems(int id) async {
+    await SQLhelper.deleteItem(id);
+    refreshsqlist();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      bottomNavigationBar: Row(
+        children: [
+          Expanded(
+              child: InkWell(
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => BookMark()));
+            },
+            child: Container(
+              decoration:
+                  BoxDecoration(borderRadius: BorderRadius.circular(14)),
+              height: 40,
+              child: Icon(
+                Icons.bookmarks_rounded,
+                color: Colors.black54,
+              ),
+            ),
+          )),
+          Expanded(
+              child: InkWell(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: Container(
+              height: 40,
+              child: Icon(
+                CupertinoIcons.square_list,
+                color: Colors.black54,
+              ),
+            ),
+          )),
+          Expanded(
+              child: InkWell(
+            onTap: () {
+              Navigator.pushNamed(context, 'dark');
+            },
+            child: Container(
+              height: 40,
+              child: Icon(
+                CupertinoIcons.settings,
+                color: Colors.black54,
+              ),
+            ),
+          ))
+        ],
+      ),
       appBar: AppBar(
-        title: Text(widget.cat.toString().toUpperCase(),
-        style: const TextStyle(
-          color: Colors.black,
-          fontWeight: FontWeight.bold,
-          fontSize: 20
-          
-        ),
-        
-        
+        backgroundColor: Colors.black12,
+        title: Text(
+          widget.cat.toString().toUpperCase(),
+          style: const TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+          ),
         ),
         elevation: 4,
         centerTitle: true,
@@ -60,7 +128,8 @@ class _NewsScreenState extends State<NewsScreen> {
                 );
               } else {
                 var newsList = snapshot.data!;
-                return ListView.builder(
+                return PageView.builder(
+                    scrollDirection: Axis.vertical,
                     itemCount: newsList.length,
                     physics: const ClampingScrollPhysics(),
                     itemBuilder: (context, index) {
@@ -73,6 +142,9 @@ class _NewsScreenState extends State<NewsScreen> {
                         url: article.url ?? "",
                         content: article.content ?? "",
                         published: article.publishedAt,
+                        FunctionAdd:addItems(article.title??"", article.description??"") ,
+                      
+                        
                       );
                     });
               }
