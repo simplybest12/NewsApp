@@ -9,6 +9,7 @@ import 'package:newsapp/screens/settings.dart';
 import 'package:provider/provider.dart';
 
 import 'screens/Welcome_Screen.dart';
+import 'screens/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,8 +33,9 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.black),
         useMaterial3: true,
       ),
-      initialRoute: 'welcome',
+      initialRoute: 'splash',
       routes: {
+        'splash' : (context) => SplashScreen(),
         'welcome': (context) => const WelcomeScreen(),
         'category': (context) => CategoryScreen(),
         'dark': (context) => DarkMode(),

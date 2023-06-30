@@ -17,22 +17,19 @@ class NewsScreen extends StatefulWidget {
 class _NewsScreenState extends State<NewsScreen> {
   late Future<List<dynamic>> newsData;
 
-
   @override
   void initState() {
-  
     // TODO: implement initState
     super.initState();
-      newsData = fetchdata();
+    newsData = fetchdata();
   }
 
   APIServices news = APIServices();
-  
+
   Future<List<dynamic>> fetchdata() async {
     await news.getNewsData(widget.cat);
     return news.news;
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -43,9 +40,7 @@ class _NewsScreenState extends State<NewsScreen> {
               child: InkWell(
             onTap: () {
               Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => BookMark()));
+                  context, MaterialPageRoute(builder: (context) => BookMark()));
             },
             child: Container(
               decoration:
@@ -126,9 +121,6 @@ class _NewsScreenState extends State<NewsScreen> {
                         url: article.url ?? "",
                         content: article.content ?? "",
                         published: article.publishedAt,
-                 
-                      
-                        
                       );
                     });
               }
@@ -142,6 +134,7 @@ class _NewsScreenState extends State<NewsScreen> {
                     const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
             );
+            
           }),
     );
   }

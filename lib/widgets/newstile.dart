@@ -10,8 +10,10 @@ import 'package:intl/intl.dart';
 import 'package:newsapp/screens/web_view.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class NewsTile extends StatefulWidget {
+  String? documentId;
   final author;
   final title;
   final description;
@@ -22,47 +24,69 @@ class NewsTile extends StatefulWidget {
   final FunctionDel;
   final published;
 
-  NewsTile(
-      {super.key,
-      this.author,
-      this.content,
-      this.description,
-      this.title,
-      this.url,
-      this.urlToImage,
-      this.FunctionAdd,
-      this.FunctionDel,
-      this.published});
+  NewsTile({
+    super.key,
+    this.author,
+    this.content,
+    this.description,
+    this.title,
+    this.url,
+    this.urlToImage,
+    this.FunctionAdd,
+    this.FunctionDel,
+    this.published,
+  });
 
   @override
   State<NewsTile> createState() => _NewsTileState();
-}
-
-int counter = 1;
-String uid = 'a';
-
-CollectionReference userCollection =
-    FirebaseFirestore.instance.collection('bookmark');
-Future addBookmark(String title, String author, String urlToImage, String pub,
-    String url) async {
-  String documentId = userCollection.doc().id;
-  // await FirebaseFirestore.instance
-  //     .collection('bookmark')
-  //     .add({'title': title, "description": description, 'id': documentId});
-  Map<String, dynamic> data = {
-    'title': title,
-    'author': author,
-    'uid': documentId,
-    'urlToimage': urlToImage,
-    'postedtime': pub,
-    'url': url,
-  };
-  userCollection.doc(documentId).set(data);
+  late List<dynamic> chckList=[];
 }
 
 class _NewsTileState extends State<NewsTile> {
-  List<dynamic> chckList = [];
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    loadcounter();
+  }
+
+  int _counter = 1;
+  loadcounter() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _counter = (prefs.getInt('counter') ?? 0);
+    });
+  }
+
+  void incrementcounter() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _counter = (prefs.getInt('counter') ?? 0) + 1;
+      prefs.setInt('counter', _counter);
+    });
+  }
+
   bool isPressed = false;
+  CollectionReference userCollection =
+      FirebaseFirestore.instance.collection('bookmark');
+  Future addBookmark(String title, String author, String urlToImage, String pub,
+      String url) async {
+    widget.documentId = userCollection.doc().id;
+    // await FirebaseFirestore.instance
+    //     .collection('bookmark')
+    //     .add({'title': title, "description": description, 'id': documentId});
+    Map<String, dynamic> data = {
+      'title': title,
+      'author': author,
+      'uid': widget.documentId,
+      'urlToimage': urlToImage,
+      'postedtime': pub,
+      'url': url,
+      'id': _counter
+    };
+    incrementcounter();
+    userCollection.doc(widget.documentId).set(data);
+  }
 
   Widget build(BuildContext context) {
     String pub = DateFormat('dd MMMM yyyy').format(widget.published);
@@ -90,17 +114,24 @@ class _NewsTileState extends State<NewsTile> {
                     onPressed: () {
                       addBookmark(widget.title, widget.author,
                           widget.urlToImage, pub, widget.url);
-                      chckList.add(uid);
-                      print(uid);
+
+                      setState(() {
+                        if (widget.chckList.contains(_counter)) {
+                          widget.chckList.remove(_counter);
+                        } else {
+                          widget.chckList.add(_counter);
+                        }
+                      });
+                      print(widget.chckList);
                     },
-                    icon: isPressed
+                    icon: widget.chckList.contains(_counter)
                         ? const Icon(
-                            Icons.bookmark_outline_outlined,
+                            Icons.bookmark,
                             color: Colors.black,
                             size: 20,
                           )
                         : const Icon(
-                            Icons.bookmark,
+                            Icons.bookmark_border_rounded,
                             color: Colors.black,
                             size: 20,
                           )),

@@ -15,15 +15,17 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       backgroundColor: Colors.amber[100],
       body: SingleChildScrollView(
         child: Column(
-          
           children: [
             Container(
-              margin: const EdgeInsets.only(left: 10,right: 10,bottom: 10),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(16),
-                child: Image.asset(
-                  'assets/images/india_gate(1).jpg',
-                  fit: BoxFit.cover,
+              margin: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
+              child: Container(
+                height: MediaQuery.of(context).size.height * 0.65,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: Image.asset(
+                    'assets/images/india_gate(1).jpg',
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
             ),
